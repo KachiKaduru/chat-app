@@ -1,7 +1,7 @@
 export default function ChatsPage() {
   return (
-    <div>
-      <h1>Chats Page</h1>
-    </div>
+    <section>
+      <h1>Your content here</h1>
+    </section>
   );
 }
