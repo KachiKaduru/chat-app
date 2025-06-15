@@ -11,6 +11,12 @@ export async function logout() {
   await signOut({ redirectTo: "/" });
 }
 
+export async function getSingleUser(id: string) {
+  const { data } = await supabase.from("users").select("*").eq("id", id);
+
+  return data?.[0];
+}
+
 export async function getUserEmail(email: string) {
   const { data } = await supabase.from("users").select("*").eq("email", email).single();
   return data;
@@ -25,4 +31,14 @@ export async function createUser(newUser: object) {
   }
 
   return data;
+}
+
+export async function getAllUsers() {
+  const { data: users, error } = await supabase.from("users").select("*");
+
+  if (error) {
+    console.error(error);
+    throw new Error("Users could not be fetched");
+  }
+  return users;
 }
