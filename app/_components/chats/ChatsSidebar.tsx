@@ -7,7 +7,7 @@ import { usePathname } from "next/navigation";
 interface Props {
   className?: string;
   users: Users;
-  user: SessionUser | null;
+  user: SessionUser | undefined;
 }
 
 export default function ChatsSidebar({ className, users, user }: Props) {

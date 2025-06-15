@@ -6,10 +6,7 @@ import { ChildrenProps } from "@/app/_types/childrenProps";
 
 export default async function ChatsLayout({ children }: ChildrenProps) {
   const users = await getAllUsers();
-
-  const session = await auth();
-  const user = session?.user ?? null;
-  // console.log(users, user);
+  const { user } = (await auth())!;
 
   return (
     <section className="grid grid-cols-1 sm:grid-cols-[auto_1fr] h-[91dvh] sm:h-[100dvh]">

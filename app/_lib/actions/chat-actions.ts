@@ -24,7 +24,8 @@ export async function getMessages(conversationID: string) {
   const { data: messages, error } = await supabase
     .from("messages")
     .select("*")
-    .eq("conversation_id", conversationID);
+    .eq("conversation_id", conversationID)
+    .order("sent_at", { ascending: true });
 
   if (error) {
     console.error(error);
@@ -32,4 +33,20 @@ export async function getMessages(conversationID: string) {
   }
 
   return messages;
+}
+
+export async function sendMessage(formData: FormData) {
+  const content = formData.get("content")?.toString() || "";
+  const conversationId = formData.get("conversation_id")?.toString();
+  const session = await auth();
+  const user = session?.user;
+
+  if (!user || !content || !conversationId) return;
+
+  await supabase.from("messages").insert({
+    sender_id: user.id,
+    conversation_id: conversationId,
+    content,
+    sent_at: new Date().toISOString(),
+  });
 }
