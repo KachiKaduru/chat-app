@@ -20,6 +20,15 @@ export async function getConversation(friendId: string) {
   return data;
 }
 
+export async function getParticipants(conversationId: string) {
+  const { data: participants } = await supabase
+    .from("conversation_participants")
+    .select("user_id, users (*)")
+    .eq("conversation_id", conversationId);
+
+  return (participants || []).map((item) => item.users);
+}
+
 export async function getMessages(conversationID: string) {
   const { data: messages, error } = await supabase
     .from("messages")
@@ -47,6 +56,6 @@ export async function sendMessage(formData: FormData) {
     sender_id: user.id,
     conversation_id: conversationId,
     content,
-    sent_at: new Date().toISOString(),
+    // sent_at: new Date().toISOString(),
   });
 }
