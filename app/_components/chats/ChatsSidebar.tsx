@@ -18,7 +18,7 @@ export default function ChatsSidebar({ className, users, user }: Props) {
 
   return (
     <section
-      className={`overflow-auto h-[100dvh] ${
+      className={`overflow-auto bg-[#001F3F] text-white h-[100dvh] ${
         isBasePath ? "w-full" : "hidden"
       } sm:block sm:w-[300px] ${className} `}
     >
@@ -28,13 +28,17 @@ export default function ChatsSidebar({ className, users, user }: Props) {
 
       <main className="flex flex-col gap-4 overflow-auto">
         <div>
-          <input type="search" className="w-full bg-white" placeholder="search here..." />
+          <input
+            type="search"
+            className="w-full bg-[#343A40] p-1"
+            placeholder="search here..."
+          />
         </div>
 
-        <div className="grid gap-1">
+        <div className="grid">
           {friends.map((item) => (
             <Link
-              className="p-2 rounded-lg bg-gray-600 block w-full"
+              className="p-2 bg-[#333333] block w-full border-b-amber-200 border-1"
               key={item.id}
               href={`/chats/${item.id}`}
             >
