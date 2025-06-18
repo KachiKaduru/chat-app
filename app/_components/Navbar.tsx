@@ -4,7 +4,6 @@ import { auth } from "../_lib/auth";
 
 export default async function Navbar() {
   const session = await auth();
-  // console.log(session?.user);
 
   return (
     <nav className="p-4 row-start-2 row-end-3 sm:max-w-[150px] sm:row-span-full sm:flex sm:flex-col sm:justify-between">
@@ -12,7 +11,7 @@ export default async function Navbar() {
         {navArray.map((item) => (
           <Link key={item.id} href={item.link} className="flex gap-2">
             <item.icon className="w-6 h-6 text-blue-700" />
-            <span>{item.title}</span>
+            <span className="hidden sm:block">{item.title}</span>
           </Link>
         ))}
       </ul>

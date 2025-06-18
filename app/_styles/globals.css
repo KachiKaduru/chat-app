@@ -4,6 +4,7 @@
   --background: #ffffff;
   --foreground: #171717;
 }
+  
 
 @theme inline {
   --color-background: var(--background);
@@ -18,6 +19,10 @@
     --foreground: #ededed;
   }
 } */
+
+* {
+  box-sizing: border-box;
+}
 
 body {
   background: var(--background);

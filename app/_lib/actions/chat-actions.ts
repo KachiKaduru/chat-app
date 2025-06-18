@@ -7,17 +7,58 @@ export async function getConversation(friendId: string) {
   const session = await auth();
   const userId = session?.user?.id;
 
-  const { data, error } = await supabase.rpc("get_conversation_between_users", {
-    user_a: userId,
-    user_b: friendId,
-  });
+  if (!userId || !friendId) throw new Error("Missing user or friend ID");
 
-  if (error) {
-    console.error(error);
+  const { data: existingConversation, error: existingConversationError } = await supabase.rpc(
+    "get_conversation_between_users",
+    {
+      user_a: userId,
+      user_b: friendId,
+    }
+  );
+
+  if (existingConversationError) {
+    console.error(existingConversationError);
     throw new Error("Data could not be fetched");
   }
 
-  return data;
+  if (existingConversation) return existingConversation;
+
+  // Step 2: No conversation found — create one
+  const { data: newConversation, error: newConversationError } = await supabase
+    .from("conversations")
+    .insert({
+      created_by: userId,
+      is_group: false,
+    })
+    .select()
+    .single();
+
+  if (newConversationError || !newConversation) {
+    console.error("Error creating conversation:", newConversationError);
+    throw new Error("Failed to create conversation");
+  }
+
+  const conversationId = newConversation.id;
+
+  // Step 3: Add both participants to conversation_participants
+  const { error: participantsError } = await supabase.from("conversation_participants").insert([
+    {
+      conversation_id: conversationId,
+      user_id: userId,
+    },
+    {
+      conversation_id: conversationId,
+      user_id: friendId,
+    },
+  ]);
+
+  if (participantsError) {
+    console.error("Error adding participants:", participantsError);
+    throw new Error("Failed to add participants");
+  }
+
+  return conversationId;
 }
 
 export async function getParticipants(conversationId: string) {
