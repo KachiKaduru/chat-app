@@ -18,19 +18,21 @@ export default function ChatsSidebar({ className, users, user }: Props) {
 
   return (
     <section
-      className={`overflow-auto bg-[#001F3F] text-white h-[100dvh] ${
+      className={`overflow-auto bg-[#343A40] text-white h-[100dvh] ${
         isBasePath ? "w-full" : "hidden"
       } sm:block sm:w-[300px] ${className} `}
     >
-      <header>
-        <h1>Chats Page</h1>
+      <header className="mt-3 w-full grid items-center justify-center">
+        <h1 className="font-bold text-[#007bff] pl-5 pb-4 text-2xl">
+          &darr; Messages
+        </h1>
       </header>
 
       <main className="flex flex-col gap-4 overflow-auto">
         <div>
           <input
             type="search"
-            className="w-full bg-[#343A40] p-1"
+            className="w-full bg-[#333333] p-1"
             placeholder="search here..."
           />
         </div>
@@ -38,7 +40,7 @@ export default function ChatsSidebar({ className, users, user }: Props) {
         <div className="grid">
           {friends.map((item) => (
             <Link
-              className="p-2 bg-[#333333] block w-full border-b-amber-200 border-1"
+              className="p-2 bg-[#001F3F] block w-full"
               key={item.id}
               href={`/chats/${item.id}`}
             >
