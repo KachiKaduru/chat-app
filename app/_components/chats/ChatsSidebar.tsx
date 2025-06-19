@@ -21,12 +21,12 @@ export default function ChatsSidebar({ className, users, user }: Props) {
 
   return (
     <section
-      className={`overflow-auto bg-white text-black h-[100dvh] ${
+      className={`overflow-auto bg-white text-black border-r-1 border-gray-200 h-[100dvh] ${
         isBasePath ? "w-full" : "hidden"
       } sm:block sm:w-[300px] ${className} `}
     >
       <div className="px-5">
-        <header className="mb-3 w-full h-16 border-b-black flex justify-between items-center">
+        <header className="mb-3 w-full h-16 border-b-1 border-gray-200 flex justify-between items-center">
           <h1 className="font-bold pl-3 text-xl">Messages &darr;</h1>
           {/* <button className="font-bold rounded-full p-3 w-8 h-8 bg-purple-600 grid items-center">
             +
