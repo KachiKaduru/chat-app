@@ -16,7 +16,7 @@ export default async function Navbar() {
           className="w-12 h-12 rounded-lg"
           referrerPolicy="no-referrer"
         />
-        <span>{session?.user?.name?.split(" ", 1)}</span>
+        <span className="mx-auto">{session?.user?.name?.split(" ", 1)}</span>
       </div>
 
       <ul className="flex gap-4 justify-between items-center sm:flex-col">
