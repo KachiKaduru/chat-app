@@ -12,8 +12,12 @@ export default function LayoutSidebar() {
     switch (pathname) {
       case "/calls":
         return <p>Calls</p>;
+      case "/chats":
+        return <p>Chats</p>;
       case "/friends":
         return <p>Friends</p>;
+      case "/settings":
+        return <p>Settings</p>;
       default:
         return <p>Default Sidebar</p>;
     }
@@ -27,7 +31,7 @@ export default function LayoutSidebar() {
     >
       <header className="">
         <div className="w-full p-4 border-b-1 border-gray-200 flex justify-between items-center">
-          <h1 className="font-bold pl-3 text-xl">{getSidebarContent(pathname)}</h1>
+          <h1 className="font-bold text-xl">{getSidebarContent(pathname)}</h1>
           <PlusCircleIcon className="size-9 text-blue-700" />
         </div>
 
