@@ -17,49 +17,43 @@ export default function ChatsSidebar({ className, users, user }: Props) {
   const isBasePath = pathname === "/chats";
 
   const friends = users.filter((item) => item.id !== user?.id);
-  console.log(user);
 
   return (
     <section
-      className={`overflow-auto bg-white text-black border-r-1 border-gray-200 h-[100dvh] ${
+      className={`overflow-auto bg-white text-black border-x-1 border-gray-200 h-[100dvh] ${
         isBasePath ? "w-full" : "hidden"
       } sm:block sm:w-[300px] ${className} `}
     >
-      <div className="px-5">
-        <header className="mb-3 w-full h-16 border-b-1 border-gray-200 flex justify-between items-center">
-          <h1 className="font-bold pl-3 text-xl">Messages &darr;</h1>
-          {/* <button className="font-bold rounded-full p-3 w-8 h-8 bg-purple-600 grid items-center">
-            +
-          </button> */}
-          <PlusCircleIcon className="size-9 text-purple-800" />
+      <div className="">
+        <header className="w-full p-4 border-b-1 border-gray-200 flex justify-between items-center">
+          <h1 className="font-bold pl-3 text-xl">Chats</h1>
+          <PlusCircleIcon className="size-9 text-blue-700" />
         </header>
 
-        <main className="flex flex-col gap-4 overflow-auto">
+        <main className="flex flex-col gap-4 overflow-auto p-4">
           <div className="w-full bg-[#f3f3f3] p-3 rounded-lg flex gap-2 items-center">
             <MagnifyingGlassIcon className="size-4 text-gray-700" />
-            <input
-              type="search"
-              placeholder="Search messages"
-              className="pl-3"
-            />
+            <input type="search" placeholder="search..." className="w-full text-sm" />
           </div>
 
-          <div className="grid">
+          <section className="">
             {friends.map((item) => (
               <Link
-                className="p-2 rounded-lg block w-full h-18 hover:bg-[#718096]"
+                className="p-2 rounded-lg block w-full hover:bg-gray-200"
                 key={item.id}
                 href={`/chats/${item.id}`}
               >
-                <div className="flex gap-5">
-                  <div className="w-12 h-12">
-                    <img src={item.image} alt="user" className="rounded-md" />
-                  </div>
-                  <div className="font-semibold">{item.name}</div>
+                <div className="flex gap-4 relaative">
+                  <img
+                    src={item.image}
+                    alt="user"
+                    className="w-8 h-8 rounded-full border border-gray-300"
+                  />
+                  <h3 className="font-semibold">{item.name}</h3>
                 </div>
               </Link>
             ))}
-          </div>
+          </section>
         </main>
       </div>
     </section>

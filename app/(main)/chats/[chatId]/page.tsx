@@ -1,5 +1,6 @@
 import MessagesContent from "@/app/_components/chats/MessagesContent";
 import SendMessage from "@/app/_components/chats/SendMessage";
+import SingleChatHeader from "@/app/_components/chats/SingleChatHeader";
 import { getConversation, getMessages, getParticipants } from "@/app/_lib/actions/chat-actions";
 import { getSingleUser } from "@/app/_lib/actions/user-actions";
 import { auth } from "@/app/_lib/auth";
@@ -25,13 +26,10 @@ export default async function SingleChat({ params }: Props) {
   const participants = await getParticipants(conversationId);
 
   return (
-    <div className="grid grid-rows-[auto_1fr] gap-5 h-[100dvh] p-2">
-      <header className="flex flex-col gap-5">
-        <h2>Chats App</h2>
-        {currentFriend && <h1>Single chat with {currentFriend.name}</h1>}
-      </header>
+    <div className="grid grid-rows-[auto_1fr] gap-3 h-[100dvh]">
+      <SingleChatHeader friend={currentFriend} />
 
-      <section className="grid grid-rows-[1fr_auto] h-[82dvh]">
+      <section className="grid grid-rows-[1fr_auto] h-[85dvh] p-2">
         <MessagesContent
           messages={messages}
           conversationId={conversationId}

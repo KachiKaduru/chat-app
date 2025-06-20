@@ -1,7 +1,5 @@
-export default function page() {
-  return (
-    <section>
-      <h1>Friends Page</h1>
-    </section>
-  );
+import AppLayout from "@/app/_layouts/AppLayout";
+
+export default function AppLayoutPage() {
+  return <AppLayout />;
 }

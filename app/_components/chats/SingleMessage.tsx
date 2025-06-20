@@ -11,10 +11,8 @@ export default function SingleMessage({ children = "", sender, user }: Props) {
 
   return (
     <div
-      className={`text-black p-2 border border-[#ccc] w-fit max-w-[40dvw] rounded-lg ${
-        isUserMessage
-          ? "bg-purple-700 self-end text-white"
-          : " bg-[#f3f3f3] border-none self-start"
+      className={`text-black p-2 border border-[#ccc] w-fit max-w-[35dvw] rounded-lg ${
+        isUserMessage ? "bg-purple-700 self-end text-white" : " bg-[#f3f3f3] border-none self-start"
       }`}
     >
       <h2 className="font-semibold mb-2">{sender.name}</h2>

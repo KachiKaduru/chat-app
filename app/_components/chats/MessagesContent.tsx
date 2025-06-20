@@ -13,12 +13,7 @@ type Props = {
   user: any;
 };
 
-export default function MessagesContent({
-  messages,
-  conversationId,
-  participants,
-  user,
-}: Props) {
+export default function MessagesContent({ messages, conversationId, participants, user }: Props) {
   const realtimeMessages = useRealtimeMessages(conversationId);
   const displayedMessages = useMemo(
     () => [...messages, ...realtimeMessages],
