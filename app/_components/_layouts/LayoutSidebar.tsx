@@ -6,6 +6,7 @@ import { PlusCircleIcon } from "@heroicons/react/24/solid";
 
 export default function LayoutSidebar() {
   const pathname = usePathname();
+
   const isBasePath = pathname === "/chats";
 
   const getSidebarContent = (pathname: string) => {
@@ -14,6 +15,8 @@ export default function LayoutSidebar() {
         return <p>Calls</p>;
       case "/chats":
         return <p>Chats</p>;
+      case "/messages":
+        return <p>Messages</p>;
       case "/friends":
         return <p>Friends</p>;
       case "/settings":

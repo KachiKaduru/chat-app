@@ -1,6 +1,5 @@
 "use server";
 
-import { ConversationType } from "@/app/_types/conversation-types";
 import { auth } from "../auth";
 import { supabase } from "../supabase";
 
@@ -102,58 +101,98 @@ export async function sendMessage(formData: FormData) {
   });
 }
 
+//VERSION ONE
+// export async function getAllUserConversations() {
+//   const session = await auth();
+//   const userId = session?.user?.id;
+
+//   if (!userId) return [];
+
+//   // Step 1: Get all conversations user is part of
+//   const { data: participantRows, error } = await supabase
+//     .from("conversation_participants")
+//     .select(
+//       `
+//       conversation_id,
+//       conversations (
+//         id,
+//         is_group,
+//         group_name,
+//         created_by
+//       )
+//     `
+//     )
+//     .eq("user_id", userId);
+
+//   if (error) {
+//     console.error("Failed to fetch conversations:", error);
+//     return [];
+//   }
+
+//   // Step 2: Enrich each conversation
+//   const enriched = await Promise.all(
+//     participantRows.map(async (row) => {
+//       const conv: ConversationType = row.conversations;
+
+//       let display_name = conv.group_name || "Unnamed Group";
+//       let image = "";
+
+//       if (!conv.is_group) {
+//         // Get the other user
+//         const { data: others } = await supabase
+//           .from("conversation_participants")
+//           .select("user_id, users(name, image)")
+//           .eq("conversation_id", conv.id)
+//           .neq("user_id", userId)
+//           .limit(1);
+
+//         const otherUser = others?.[0]?.users;
+//         display_name = otherUser?.name || "Unknown";
+//         image = otherUser?.image || "";
+//       }
+
+//       // Get latest message for this conversation
+//       const { data: lastMsg, error: lastMsgErr } = await supabase
+//         .from("messages")
+//         .select("content, sent_at")
+//         .eq("conversation_id", conv.id)
+//         .order("sent_at", { ascending: false })
+//         .limit(1)
+//         .single();
+
+//       return {
+//         id: conv.id,
+//         is_group: conv.is_group,
+//         display_name,
+//         image,
+//         last_message: lastMsg?.content || null,
+//         last_sent_at: lastMsg?.sent_at || null,
+//       };
+//     })
+//   );
+
+//   // Step 3: Sort by latest sent_at
+//   return enriched.sort((a, b) => {
+//     const dateA = a.last_sent_at ? new Date(a.last_sent_at).getTime() : 0;
+//     const dateB = b.last_sent_at ? new Date(b.last_sent_at).getTime() : 0;
+//     return dateB - dateA;
+//   });
+// }
+
 export async function getAllUserConversations() {
   const session = await auth();
   const userId = session?.user?.id;
 
   if (!userId) return [];
 
-  // Fetch all conversations the user is in
-  const { data: participantRows, error } = await supabase
-    .from("conversation_participants")
-    .select(
-      `
-      conversation_id,
-      conversations (
-        id,
-        is_group,
-        group_name,
-        created_by
-      )
-    `
-    )
-    .eq("user_id", userId);
+  const { data, error } = await supabase.rpc("get_user_conversations", {
+    p_user_id: userId,
+  });
 
   if (error) {
-    console.error("Failed to fetch conversations:", error);
+    console.error("Error calling get_user_conversations:", error);
     return [];
   }
 
-  const enriched = await Promise.all(
-    participantRows.map(async (row) => {
-      const conv: ConversationType = row.conversations;
-
-      let display_name = conv.group_name;
-
-      if (!conv.is_group) {
-        // Get the other user
-        const { data: others } = await supabase
-          .from("conversation_participants")
-          .select("user_id, users(name)")
-          .eq("conversation_id", conv.id)
-          .neq("user_id", userId)
-          .limit(1);
-
-        display_name = others?.[0]?.users?.name || "Unknown";
-      }
-
-      return {
-        id: conv.id,
-        is_group: conv.is_group,
-        display_name,
-      };
-    })
-  );
-
-  return enriched;
+  return data;
 }
