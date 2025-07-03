@@ -6,6 +6,7 @@ import { auth } from "@/app/_lib/auth";
 import { ChildrenProps } from "@/app/_types/childrenProps";
 
 export default async function ChatsLayout({ children }: ChildrenProps) {
+  // const [users, conversations] = await Promise.all(getAllUsers(), getAllUserConversations())
   const users = await getAllUsers();
   const session = await auth();
   const user = session?.user;
