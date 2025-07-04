@@ -6,17 +6,21 @@ export default async function Navbar() {
   const session = await auth();
 
   return (
-    <nav className="p-6 row-start-2 row-end-3 sm:max-w-[150px] sm:row-span-full sm:flex sm:flex-col sm:justify-between">
+    <nav className="p-6 row-start-2 row-end-3 sm:max-w-[150px] sm:row-span-full sm:flex sm:flex-col sm:gap-4">
+      <header className="hidden sm:block">
+        <h1>Chat App</h1>
+      </header>
+
       <ul className="flex gap-4 justify-between items-center sm:flex-col">
         {navArray.map((item) => (
           <Link key={item.id} href={item.link} className="flex gap-2">
-            <item.icon className="w-6 h-6 text-black hover:text-purple-800" />
+            <item.icon className="w-6 h-6 text-indigo-700" />
             {/* <span>{item.title}</span> */}
           </Link>
         ))}
       </ul>
 
-      <div className="hidden sm:block">
+      <div className="hidden sm:block sm:self-center sm:justify-self-end">
         <img
           src={session?.user?.image}
           alt={session?.user?.name}

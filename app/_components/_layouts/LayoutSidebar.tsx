@@ -1,50 +1,69 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
-import { PlusCircleIcon } from "@heroicons/react/24/solid";
+import { useQuery } from "@tanstack/react-query";
+
+import { getAllUsers } from "@/app/_lib/actions/user-actions";
+import { getAllUserConversations } from "@/app/_lib/actions/chat-actions";
+
+import LayoutSidebarHeader from "./LayoutSidebarHeader";
+import { SidebarItem } from "@/app/_types/data-types";
+import LayoutSidebarItem from "./LayoutSidebarItem";
 
 export default function LayoutSidebar() {
   const pathname = usePathname();
-  const isBasePath = pathname === "/chats";
+  const isMessages = pathname.startsWith("/messages");
+  const isFriends = pathname.startsWith("/friends");
 
-  const getSidebarContent = (pathname: string) => {
-    switch (pathname) {
-      case "/calls":
-        return <p>Calls</p>;
-      case "/chats":
-        return <p>Chats</p>;
-      case "/friends":
-        return <p>Friends</p>;
-      case "/settings":
-        return <p>Settings</p>;
+  const { data: conversations, isLoading: loadingMessages } = useQuery({
+    queryKey: ["conversations"],
+    queryFn: getAllUserConversations,
+    enabled: isMessages,
+    staleTime: 0,
+  });
+
+  const { data: users, isLoading: loadingUsers } = useQuery({
+    queryKey: ["users"],
+    queryFn: getAllUsers,
+    enabled: isFriends,
+    staleTime: 0,
+  });
+
+  const isLoading = loadingMessages || loadingUsers;
+
+  let displayedData: SidebarItem[] = [];
+
+  function getDisplayedData() {
+    switch (true) {
+      case isLoading:
+        return [];
+      case isMessages:
+        return conversations;
+      case isFriends:
+        return users;
       default:
-        return <p>Default Sidebar</p>;
+        return [];
     }
-  };
+  }
+
+  displayedData = getDisplayedData();
 
   return (
     <section
-      className={`overflow-auto bg-white text-black border-x-1 border-gray-200 h-[100dvh] ${
-        !isBasePath ? "w-full" : "hidden"
-      } sm:block sm:w-[300px]`}
+      className={`overflow-auto bg-white text-black border-x-1 border-gray-200 h-[100dvh]  sm:block sm:w-[300px]`}
     >
-      <header className="">
-        <div className="w-full p-4 border-b-1 border-gray-200 flex justify-between items-center">
-          <h1 className="font-bold text-xl">{getSidebarContent(pathname)}</h1>
-          <PlusCircleIcon className="size-9 text-blue-700" />
-        </div>
+      <LayoutSidebarHeader pathname={pathname} />
 
-        <div className="p-4">
-          <div className="w-full bg-[#f3f3f3] px-3 py-2 rounded-lg flex gap-2 items-center">
-            <MagnifyingGlassIcon className="size-4 text-gray-700" />
-
-            <input type="search" placeholder="search..." className="w-full text-sm" />
-          </div>
-        </div>
-      </header>
-
-      <main className="flex flex-col gap-4 overflow-auto p-4"></main>
+      <main className="flex flex-col gap-4 overflow-auto p-4">
+        {displayedData.map((item, index) => (
+          <LayoutSidebarItem
+            isFriends={isFriends}
+            isMessages={isMessages}
+            item={item}
+            key={`no-${index}`}
+          />
+        ))}
+      </main>
     </section>
   );
 }

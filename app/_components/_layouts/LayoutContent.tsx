@@ -10,9 +10,7 @@ export default function LayoutContent({ children }: ChildrenProps) {
 
   return (
     <section className={` overflow-auto ${!isBasePath ? "hidden" : ""} sm:block`}>
-      <h1> The mainest content</h1>
-
-      <div>{children}</div>
+      {children}
     </section>
   );
 }

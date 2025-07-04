@@ -1,8 +1,26 @@
 "use server";
 
-import { ConversationType } from "@/app/_types/conversation-types";
 import { auth } from "../auth";
 import { supabase } from "../supabase";
+
+//CONVERSATIONS
+export async function getAllUserConversations() {
+  const session = await auth();
+  const userId = session?.user?.id;
+
+  if (!userId) return [];
+
+  const { data, error } = await supabase.rpc("get_user_conversations", {
+    p_user_id: userId,
+  });
+
+  if (error) {
+    console.error("Error calling get_user_conversations:", error);
+    return [];
+  }
+
+  return data;
+}
 
 export async function getConversation(friendId: string) {
   const session = await auth();
@@ -62,6 +80,7 @@ export async function getConversation(friendId: string) {
   return conversationId;
 }
 
+//PARTICIPANTS
 export async function getParticipants(conversationId: string) {
   const { data: participants } = await supabase
     .from("conversation_participants")
@@ -71,6 +90,7 @@ export async function getParticipants(conversationId: string) {
   return (participants || []).map((item) => item.users);
 }
 
+//MESSAGES
 export async function getMessages(conversationID: string) {
   const { data: messages, error } = await supabase
     .from("messages")
@@ -100,60 +120,4 @@ export async function sendMessage(formData: FormData) {
     content,
     // sent_at: new Date().toISOString(),
   });
-}
-
-export async function getAllUserConversations() {
-  const session = await auth();
-  const userId = session?.user?.id;
-
-  if (!userId) return [];
-
-  // Fetch all conversations the user is in
-  const { data: participantRows, error } = await supabase
-    .from("conversation_participants")
-    .select(
-      `
-      conversation_id,
-      conversations (
-        id,
-        is_group,
-        group_name,
-        created_by
-      )
-    `
-    )
-    .eq("user_id", userId);
-
-  if (error) {
-    console.error("Failed to fetch conversations:", error);
-    return [];
-  }
-
-  const enriched = await Promise.all(
-    participantRows.map(async (row) => {
-      const conv: ConversationType = row.conversations;
-
-      let display_name = conv.group_name;
-
-      if (!conv.is_group) {
-        // Get the other user
-        const { data: others } = await supabase
-          .from("conversation_participants")
-          .select("user_id, users(name)")
-          .eq("conversation_id", conv.id)
-          .neq("user_id", userId)
-          .limit(1);
-
-        display_name = others?.[0]?.users?.name || "Unknown";
-      }
-
-      return {
-        id: conv.id,
-        is_group: conv.is_group,
-        display_name,
-      };
-    })
-  );
-
-  return enriched;
 }
