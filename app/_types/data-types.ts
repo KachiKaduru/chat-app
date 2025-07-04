@@ -7,4 +7,5 @@ export interface SidebarItem {
   is_group?: boolean;
   last_message?: string;
   last_sent_at?: string;
+  created_at?: string;
 }
