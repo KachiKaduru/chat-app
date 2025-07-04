@@ -7,7 +7,7 @@ import { auth } from "@/app/_lib/auth";
 
 interface Props {
   params: {
-    messageId: string;
+    friendId: string;
   };
 }
 
@@ -17,10 +17,10 @@ export default async function ConversationsPage({ params }: Props) {
   const session = await auth();
   const user = session?.user;
 
-  const { messageId } = await params;
-  const currentFriend = await getSingleUser(messageId);
+  const { friendId } = await params;
+  const currentFriend = await getSingleUser(friendId);
 
-  const conversationId = await getConversation(messageId);
+  const conversationId = await getConversation(friendId);
   const messages = (await getMessages(conversationId)) ?? [];
 
   const participants = await getParticipants(conversationId);

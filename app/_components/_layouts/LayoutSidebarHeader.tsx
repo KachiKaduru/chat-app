@@ -1,33 +1,23 @@
 "use client";
 
 import { MagnifyingGlassIcon, PlusCircleIcon } from "@heroicons/react/24/solid";
-import { usePathname } from "next/navigation";
 
-export default function LayoutSidebarHeader() {
-  const pathname = usePathname();
+export default function LayoutSidebarHeader({ pathname = "" }) {
+  const sidebarRoutes = [
+    { prefix: "/calls", label: "Calls" },
+    { prefix: "/chats", label: "Chats" },
+    { prefix: "/messages", label: "Messages" },
+    { prefix: "/friends", label: "Friends" },
+    { prefix: "/settings", label: "Settings" },
+  ];
 
-  //   const isBasePath = pathname === "/chats";
+  const matchedRoute = sidebarRoutes.find((route) => pathname.startsWith(route.prefix));
+  const sidebarLabel = matchedRoute?.label ?? "Default Sidebar";
 
-  const getSidebarContent = (pathname: string) => {
-    switch (pathname) {
-      case "/calls":
-        return <p>Calls</p>;
-      case "/chats":
-        return <p>Chats</p>;
-      case "/messages":
-        return <p>Messages</p>;
-      case "/friends":
-        return <p>Friends</p>;
-      case "/settings":
-        return <p>Settings</p>;
-      default:
-        return <p>Default Sidebar</p>;
-    }
-  };
   return (
     <header className="">
       <div className="w-full p-4 border-b-1 border-gray-200 flex justify-between items-center">
-        <h1 className="font-bold text-xl">{getSidebarContent(pathname)}</h1>
+        <h1 className="font-bold text-xl">{sidebarLabel}</h1>
         <PlusCircleIcon className="size-9 text-blue-700" />
       </div>
 
