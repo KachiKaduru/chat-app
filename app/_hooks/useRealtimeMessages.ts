@@ -8,8 +8,10 @@ export function useRealtimeMessages(conversationId: string) {
   const [messages, setMessages] = useState<SingleMessageType[]>([]);
 
   useEffect(() => {
+    if (!conversationId) return;
+
     const channel = supabase
-      .channel("messages-realtime")
+      .channel(`messages:${conversationId}`)
       .on(
         "postgres_changes",
         {
@@ -19,7 +21,15 @@ export function useRealtimeMessages(conversationId: string) {
           filter: `conversation_id=eq.${conversationId}`,
         },
         (payload) => {
-          setMessages((prev) => [...prev, payload.new as SingleMessageType]);
+          const newMessage = payload.new as SingleMessageType;
+          setMessages((prev) => {
+            const exists = prev.find((m) => m.id === newMessage.id);
+            return exists ? prev : [...prev, newMessage];
+          });
+          // setMessages((prev) => {
+          //   const exists = prev.find((m) => m.id === newMessage.id);
+          //   return exists ? prev : [...prev, newMessage];
+          // });
         }
       )
       .subscribe();
