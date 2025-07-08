@@ -6,11 +6,5 @@ import { usePathname } from "next/navigation";
 export default function LayoutContent({ children }: ChildrenProps) {
   const pathname = usePathname();
 
-  const isBasePath = pathname === "/chats";
-
-  return (
-    <section className={` overflow-auto ${!isBasePath ? "hidden" : ""} sm:block`}>
-      {children}
-    </section>
-  );
+  return <section className={` overflow-auto hidden sm:block`}>{children}</section>;
 }

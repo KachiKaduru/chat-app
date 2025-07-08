@@ -1,23 +1,30 @@
 "use client";
 
-import { Messages, SingleMessageType } from "@/app/_types/message-types";
-import SingleMessage from "./SingleMessage";
-import { useRealtimeMessages } from "@/app/_hooks/useRealtimeMessages";
 import { useEffect, useMemo, useRef } from "react";
-import { User } from "@/app/_types/users-type";
+import { useQuery } from "@tanstack/react-query";
+import { getMessages } from "@/app/_lib/actions/chat-actions";
+
+import { User, Users } from "@/app/_types/users-type";
+import { SingleMessageType } from "@/app/_types/message-types";
+
+import { useRealtimeMessages } from "@/app/_hooks/useRealtimeMessages";
+import SingleMessage from "./SingleMessage";
 
 type Props = {
-  messages: Messages;
   conversationId: string;
-  participants: User[] | any[];
-  user: any;
+  participants: Users;
+  user: User;
 };
 
-export default function MessagesContent({ messages, conversationId, participants, user }: Props) {
+export default function MessagesContent({ conversationId, participants, user }: Props) {
+  const { data: initialMessages = [] } = useQuery({
+    queryKey: ["messages", conversationId],
+    queryFn: () => getMessages(conversationId),
+  });
   const realtimeMessages = useRealtimeMessages(conversationId);
   const displayedMessages = useMemo(
-    () => [...messages, ...realtimeMessages],
-    [messages, realtimeMessages]
+    () => [...initialMessages, ...realtimeMessages],
+    [initialMessages, realtimeMessages]
   );
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -30,6 +37,8 @@ export default function MessagesContent({ messages, conversationId, participants
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [displayedMessages]);
+
+  if (!conversationId) return null;
 
   return (
     <section className="overflow-auto h-full pb-4 bg-white">

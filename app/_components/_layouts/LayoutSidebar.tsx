@@ -60,7 +60,7 @@ export default function LayoutSidebar() {
             isFriends={isFriends}
             isMessages={isMessages}
             item={item}
-            key={`no-${index}`}
+            key={`no-${index + 1}`}
           />
         ))}
       </main>
