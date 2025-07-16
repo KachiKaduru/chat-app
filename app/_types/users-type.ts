@@ -1,3 +1,8 @@
+export type Session = {
+  user: SessionUser;
+  expires: string;
+};
+
 export interface SessionUser {
   id: string;
   name: string;
