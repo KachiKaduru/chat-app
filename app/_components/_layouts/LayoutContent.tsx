@@ -1,10 +1,14 @@
 "use client";
 
+import useLayoutStore from "@/app/_store/useLayoutStore";
 import { ChildrenProps } from "@/app/_types/childrenProps";
-import { usePathname } from "next/navigation";
 
 export default function LayoutContent({ children }: ChildrenProps) {
-  const pathname = usePathname();
+  const isBasePath = useLayoutStore((state) => state.isBasePath);
 
-  return <section className={` overflow-auto hidden sm:block`}>{children}</section>;
+  return (
+    <section className={`overflow-auto ${isBasePath ? "hidden" : "block"} sm:block`}>
+      {children}
+    </section>
+  );
 }

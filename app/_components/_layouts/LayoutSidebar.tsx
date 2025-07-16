@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 
 import { getAllUsers } from "@/app/_lib/actions/user-actions";
 import { getAllUserConversations } from "@/app/_lib/actions/chat-actions";
+import useLayoutStore from "@/app/_store/useLayoutStore";
 
 import LayoutSidebarHeader from "./LayoutSidebarHeader";
 import { SidebarItem } from "@/app/_types/data-types";
@@ -12,6 +13,8 @@ import LayoutSidebarItem from "./LayoutSidebarItem";
 
 export default function LayoutSidebar() {
   const pathname = usePathname();
+  const isBasePath = useLayoutStore((state) => state.isBasePath);
+
   const isMessages = pathname.startsWith("/messages");
   const isFriends = pathname.startsWith("/friends");
 
@@ -50,7 +53,9 @@ export default function LayoutSidebar() {
 
   return (
     <section
-      className={`overflow-auto bg-white text-black border-x-1 border-gray-200 h-[100dvh]  sm:block sm:w-[300px]`}
+      className={`h-full ${
+        isBasePath ? "block" : " hidden"
+      } sm:block sm:w-[300px] overflow-auto bg-white text-black border-x-1 border-gray-200`}
     >
       <LayoutSidebarHeader pathname={pathname} />
 

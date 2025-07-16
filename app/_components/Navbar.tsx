@@ -1,12 +1,19 @@
+"use client";
+
 import Link from "next/link";
 import { navArray } from "../_data/navigation";
-import { auth } from "../_lib/auth";
+import { Session } from "../_types/users-type";
+import useLayoutStore from "../_store/useLayoutStore";
 
-export default async function Navbar() {
-  const session = await auth();
+export default function Navbar({ session }: { session: Session }) {
+  const isBasePath = useLayoutStore((state) => state.isBasePath);
 
   return (
-    <nav className="p-6 row-start-2 row-end-3 sm:max-w-[150px] sm:row-span-full sm:flex sm:flex-col sm:gap-4">
+    <nav
+      className={`p-6 row-start-2 row-end-3 sm:max-w-[150px] sm:row-span-full ${
+        isBasePath ? "block" : "hidden h-0"
+      } sm:flex sm:flex-col sm:gap-4`}
+    >
       <header className="hidden sm:block">
         <h1>Chat App</h1>
       </header>
