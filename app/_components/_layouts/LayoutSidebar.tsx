@@ -22,7 +22,9 @@ export default function LayoutSidebar() {
     queryKey: ["conversations"],
     queryFn: getAllUserConversations,
     enabled: isMessages,
-    staleTime: 0,
+    staleTime: 1000 * 10, // 10s
+    refetchOnMount: "always",
+    refetchOnReconnect: true,
   });
 
   const { data: users, isLoading: loadingUsers } = useQuery({

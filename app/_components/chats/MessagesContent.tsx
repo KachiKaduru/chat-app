@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getMessages } from "@/app/_lib/actions/chat-actions";
 
-import { User, Users } from "@/app/_types/users-type";
+import { User } from "@/app/_types/users-type";
 import { SingleMessageType } from "@/app/_types/message-types";
 
 import { useRealtimeMessages } from "@/app/_hooks/useRealtimeMessages";
@@ -12,20 +12,31 @@ import SingleMessage from "./SingleMessage";
 
 type Props = {
   conversationId: string;
-  participants: Users;
+  participants: any[];
+  // participants: Users;
   user: User;
 };
 
 export default function MessagesContent({ conversationId, participants, user }: Props) {
-  const { data: initialMessages = [] } = useQuery({
+  // const { data: initialMessages = [] } = useQuery({
+  //   queryKey: ["messages", conversationId],
+  //   queryFn: () => getMessages(conversationId),
+  // });
+  // const realtimeMessages = useRealtimeMessages(conversationId);
+
+  // // console.log(realtimeMessages);
+  // const displayedMessages = useMemo(
+  //   () => [...initialMessages, ...realtimeMessages],
+  //   [initialMessages, realtimeMessages]
+  // );
+
+  const { data: messages = [] } = useQuery({
     queryKey: ["messages", conversationId],
     queryFn: () => getMessages(conversationId),
   });
-  const realtimeMessages = useRealtimeMessages(conversationId);
-  const displayedMessages = useMemo(
-    () => [...initialMessages, ...realtimeMessages],
-    [initialMessages, realtimeMessages]
-  );
+
+  useRealtimeMessages(conversationId); // Just subscribe, don’t return messages
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   function getMessageSender(sender_id: string) {
@@ -36,14 +47,15 @@ export default function MessagesContent({ conversationId, participants, user }: 
   // Scroll to bottom whenever messages update
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [displayedMessages]);
+  }, [messages]);
+  // }, [displayedMessages]);
 
   if (!conversationId) return null;
 
   return (
-    <section className="overflow-auto h-full pb-4 bg-white">
+    <section className="overflow-auto h-full px-2 pt-1 pb-4  bg-white">
       <div className="flex flex-col gap-2">
-        {displayedMessages.map((message: SingleMessageType) => (
+        {messages.map((message: SingleMessageType) => (
           <SingleMessage
             key={message.sent_at}
             sender={getMessageSender(message.sender_id)}

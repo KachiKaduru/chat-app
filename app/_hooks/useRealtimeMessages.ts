@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { supabase } from "../_lib/supabase";
 import { SingleMessageType } from "../_types/message-types";
+import { useQueryClient } from "@tanstack/react-query";
 
 export function useRealtimeMessages(conversationId: string) {
-  const [messages, setMessages] = useState<SingleMessageType[]>([]);
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     if (!conversationId) return;
@@ -22,14 +23,16 @@ export function useRealtimeMessages(conversationId: string) {
         },
         (payload) => {
           const newMessage = payload.new as SingleMessageType;
-          setMessages((prev) => {
-            const exists = prev.find((m) => m.id === newMessage.id);
-            return exists ? prev : [...prev, newMessage];
-          });
-          // setMessages((prev) => {
-          //   const exists = prev.find((m) => m.id === newMessage.id);
-          //   return exists ? prev : [...prev, newMessage];
-          // });
+
+          // Update cached messages
+          queryClient.setQueryData<SingleMessageType[]>(
+            ["messages", conversationId],
+            (oldMessages = []) => {
+              const exists = oldMessages.find((msg) => msg.id === newMessage.id);
+              if (exists) return oldMessages;
+              return [...oldMessages, newMessage];
+            }
+          );
         }
       )
       .subscribe();
@@ -37,7 +40,5 @@ export function useRealtimeMessages(conversationId: string) {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [conversationId]);
-
-  return messages;
+  }, [conversationId, queryClient]);
 }
