@@ -4,7 +4,7 @@ import { signIn, signOut } from "../auth";
 import { supabase } from "../supabase";
 
 export async function loginWithGoogle() {
-  await signIn("google", { redirectTo: "/chats" });
+  await signIn("google", { redirectTo: "/messages" });
 }
 
 export async function logout() {

@@ -6,7 +6,7 @@ export default async function RootHomePage() {
       <h1>Hello</h1>
 
       <div>
-        <Link href={"/chats"}>To Chats page</Link>
+        <Link href={"/messages"}>To Messages page</Link>
       </div>
     </div>
   );

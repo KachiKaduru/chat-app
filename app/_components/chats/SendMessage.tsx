@@ -4,7 +4,7 @@ import { PaperClipIcon } from "@heroicons/react/24/outline";
 
 export default function SendMessage({ conversationId = "" }) {
   return (
-    <div className="w-full flex border-t pt-2 outline-purple-400 items-center px-2 gap-4">
+    <div className="w-full flex border-t py-3 outline-purple-400 items-center px-2 gap-4">
       <PaperClipIcon className="size-5" />
 
       <form

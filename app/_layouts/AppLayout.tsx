@@ -4,9 +4,9 @@ import { ChildrenProps } from "../_types/childrenProps";
 
 export const revalidate = 0;
 
-export default function AppLayout({ children }: ChildrenProps) {
+export default async function AppLayout({ children }: ChildrenProps) {
   return (
-    <section className="min-w-[320px] h-[91dvh] sm:h-[100dvh] grid grid-cols-1 sm:grid-cols-[auto_1fr] w-full overflow-auto">
+    <section className="min-w-[320px] sm:h-[100dvh] grid grid-cols-1 sm:grid-cols-[auto_1fr] w-full overflow-auto">
       <LayoutSidebar />
 
       <LayoutContent>{children}</LayoutContent>
