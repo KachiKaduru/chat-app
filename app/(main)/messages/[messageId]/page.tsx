@@ -1,10 +1,11 @@
 import { auth } from "@/app/_lib/auth";
-import { getParticipants } from "@/app/_lib/actions/chat-actions";
+import { getAllUserConversations, getParticipants } from "@/app/_lib/actions/chat-actions";
 
 import MessagesContent from "@/app/_components/chats/MessagesContent";
 import SendMessage from "@/app/_components/chats/SendMessage";
 import SingleChatHeader from "@/app/_components/chats/SingleChatHeader";
 import { User } from "@/app/_types/users-type";
+import { ConversationType } from "@/app/_types/conversation-types";
 
 interface Props {
   params: {
@@ -20,7 +21,14 @@ export default async function ConversationsPage({ params }: Props) {
 
   const { messageId: conversationId } = await params;
 
-  const participants = await getParticipants(conversationId);
+  const [participants, conversations] = await Promise.all([
+    getParticipants(conversationId),
+    getAllUserConversations(),
+  ]);
+
+  const isGroup =
+    conversations.find((item: ConversationType) => item?.conversation_id === conversationId)
+      .is_group === true;
 
   return (
     <div className="grid grid-cols-1 grid-rows-[auto_1fr_auto] gap-3 h-[100dvh]">
@@ -30,6 +38,7 @@ export default async function ConversationsPage({ params }: Props) {
         conversationId={conversationId}
         participants={participants}
         user={user as User}
+        isGroup={isGroup}
       />
       <SendMessage conversationId={conversationId} />
     </div>
