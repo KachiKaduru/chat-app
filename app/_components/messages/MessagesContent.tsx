@@ -12,7 +12,7 @@ import SingleMessage from "./SingleMessage";
 
 type Props = {
   conversationId: string;
-  participants: any[];
+  participants: User[];
   user: User;
   isGroup: boolean;
 };
@@ -40,7 +40,7 @@ export default function MessagesContent({ conversationId, participants, user, is
   if (!conversationId) return null;
 
   return (
-    <section className="overflow-auto h-full px-2 pt-1 pb-4  bg-white">
+    <section className="overflow-auto h-full px-2 pt-1 pb-4">
       <div className={`flex flex-col ${isGroup ? "gap-3" : "gap-2"}`}>
         {messages.map((message: SingleMessageType) => (
           <SingleMessage

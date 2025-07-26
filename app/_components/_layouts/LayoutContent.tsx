@@ -7,7 +7,7 @@ export default function LayoutContent({ children }: ChildrenProps) {
   const isBasePath = useLayoutStore((state) => state.isBasePath);
 
   return (
-    <section className={`overflow-auto ${isBasePath ? "hidden" : "block"} sm:block`}>
+    <section className={`overflow-auto bg-gray-50 ${isBasePath ? "hidden" : "block"} sm:block`}>
       {children}
     </section>
   );
