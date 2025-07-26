@@ -1,9 +1,9 @@
 import { auth } from "@/app/_lib/auth";
 import { getAllUserConversations, getParticipants } from "@/app/_lib/actions/chat-actions";
 
-import MessagesContent from "@/app/_components/chats/MessagesContent";
-import SendMessage from "@/app/_components/chats/SendMessage";
-import SingleChatHeader from "@/app/_components/chats/SingleChatHeader";
+import MessagesContent from "@/app/_components/messages/MessagesContent";
+import SendMessage from "@/app/_components/messages/SendMessage";
+import SingleChatHeader from "@/app/_components/messages/SingleChatHeader";
 import { User } from "@/app/_types/users-type";
 import { ConversationType } from "@/app/_types/conversation-types";
 

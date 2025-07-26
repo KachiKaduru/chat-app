@@ -1,6 +1,7 @@
 import { SidebarItem } from "@/app/_types/data-types";
 import { userDateJoinedFormatted } from "@/app/_utils/date-helpers";
 import { UserGroupIcon } from "@heroicons/react/24/solid";
+import Image from "next/image";
 import Link from "next/link";
 
 interface Props {
@@ -32,12 +33,14 @@ export default function LayoutSidebarItem({ item, isMessages, isFriends }: Props
       href={link}
     >
       <div className="flex gap-4 relative items-center">
-        <span className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center">
+        <span className="relative w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center">
           {image ? (
-            <img
+            <Image
               src={image}
               alt={`${display_name || name}`}
               className="w-8 h-8 rounded-full border border-gray-300"
+              fill
+              sizes="32px"
             />
           ) : (
             <UserGroupIcon className="w-6 h-6 text-gray-400" />

@@ -31,6 +31,7 @@ export default function SingleMessage({ children = "", sender, user, isGroup }: 
             src={isUserMessage ? user.image : sender.image}
             alt={isUserMessage ? user.name : sender.name}
             fill
+            sizes="24px"
             className="rounded-[50%] border border-gray-300"
           />
         </div>

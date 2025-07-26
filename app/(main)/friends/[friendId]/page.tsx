@@ -2,9 +2,9 @@ import { auth } from "@/app/_lib/auth";
 import { getConversation, getMessages, getParticipants } from "@/app/_lib/actions/chat-actions";
 import { getSingleUser } from "@/app/_lib/actions/user-actions";
 
-import MessagesContent from "@/app/_components/chats/MessagesContent";
-import SendMessage from "@/app/_components/chats/SendMessage";
-import SingleChatHeader from "@/app/_components/chats/SingleChatHeader";
+import MessagesContent from "@/app/_components/messages/MessagesContent";
+import SendMessage from "@/app/_components/messages/SendMessage";
+import SingleChatHeader from "@/app/_components/messages/SingleChatHeader";
 
 interface Props {
   params: {

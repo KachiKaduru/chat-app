@@ -10,6 +10,7 @@ import TrackPath from "../_components/TrackPath";
 
 export default async function MainLayout({ children }: ChildrenProps) {
   const session = await auth();
+  console.log(session);
 
   const queryClient = new QueryClient();
 
