@@ -24,7 +24,7 @@ export default function HomePage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}
-            className="text-5xl lg:text-6xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-[#928dab] to-[#c9c5e8]"
+            className="text-4xl lg:text-5xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-[#928dab] to-[#c9c5e8]"
           >
             Your conversations, simplified and safeguarded.
           </motion.h1>
@@ -33,7 +33,7 @@ export default function HomePage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.4 }}
-            className="text-xl text-[#d1d1d1] mb-10 max-w-lg mx-auto lg:mx-0"
+            className="text-lg text-[#d1d1d1] mb-10 max-w-lg mx-auto lg:mx-0"
           >
             With ChatSphere, you&apos;ll get fast, simple, secure messaging for free*, available on
             all devices.
@@ -46,7 +46,7 @@ export default function HomePage() {
             className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-12"
           >
             {[
-              { icon: <FiMessageSquare size={24} />, text: "End-to-end encrypted messages" },
+              { icon: <FiMessageSquare size={24} />, text: "End-to-end messages" },
               { icon: <FiUsers size={24} />, text: "Groups to keep in touch" },
               { icon: <FiLock size={24} />, text: "Privacy by default" },
               { icon: <FiSmartphone size={24} />, text: "Available on all devices" },
