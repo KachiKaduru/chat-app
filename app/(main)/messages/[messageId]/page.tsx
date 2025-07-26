@@ -1,11 +1,16 @@
 import { auth } from "@/app/_lib/auth";
-import { getAllUserConversations, getParticipants } from "@/app/_lib/actions/chat-actions";
+import {
+  getAllUserConversations,
+  getMessages,
+  getParticipants,
+} from "@/app/_lib/actions/chat-actions";
 
 import MessagesContent from "@/app/_components/messages/MessagesContent";
 import SendMessage from "@/app/_components/messages/SendMessage";
 import SingleChatHeader from "@/app/_components/messages/SingleChatHeader";
 import { User } from "@/app/_types/users-type";
 import { ConversationType } from "@/app/_types/conversation-types";
+import { QueryClient } from "@tanstack/react-query";
 
 interface Props {
   params: {
@@ -18,12 +23,27 @@ export const revalidate = 0;
 export default async function ConversationsPage({ params }: Props) {
   const session = await auth();
   const user = session?.user;
-
   const { messageId: conversationId } = await params;
 
+  // Create query client for server-side prefetching
+  const queryClient = new QueryClient();
+
+  // Prefetch both conversations and messages
+  await Promise.all([
+    queryClient.prefetchQuery({
+      queryKey: ["conversations"],
+      queryFn: getAllUserConversations,
+    }),
+    queryClient.prefetchQuery({
+      queryKey: ["messages", conversationId],
+      queryFn: () => getMessages(conversationId),
+    }),
+  ]);
+
+  // Get participants and conversations in parallel
   const [participants, conversations] = await Promise.all([
     getParticipants(conversationId),
-    getAllUserConversations(),
+    getAllUserConversations(), // This will come from cache due to prefetch
   ]);
 
   const isGroup =

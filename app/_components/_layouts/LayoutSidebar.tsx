@@ -8,23 +8,26 @@ import { getAllUserConversations } from "@/app/_lib/actions/chat-actions";
 import useLayoutStore from "@/app/_store/useLayoutStore";
 
 import LayoutSidebarHeader from "./LayoutSidebarHeader";
-import { SidebarItem } from "@/app/_types/data-types";
 import LayoutSidebarItem from "./LayoutSidebarItem";
+import { useRealtimeConversations } from "@/app/_hooks/useRealtimeConversations";
+import { SessionUser } from "@/app/_types/users-type";
+import { SidebarItem } from "@/app/_types/data-types";
 
-export default function LayoutSidebar() {
+export default function LayoutSidebar({ user }: { user: SessionUser }) {
   const pathname = usePathname();
   const isBasePath = useLayoutStore((state) => state.isBasePath);
 
   const isMessages = pathname.startsWith("/messages");
   const isFriends = pathname.startsWith("/friends");
 
-  const { data: conversations, isLoading: loadingMessages } = useQuery({
+  // Add realtime updates
+  const { data: conversations, isLoading: loadingConversations } = useQuery({
     queryKey: ["conversations"],
     queryFn: getAllUserConversations,
     enabled: isMessages,
-    staleTime: 1000 * 10, // 10s
-    refetchOnMount: "always",
-    refetchOnReconnect: true,
+    staleTime: 0,
+    // staleTime: 1000 * 60 * 5, // 5 minutes
+    // refetchOnMount: false, // Changed from "always"
   });
 
   const { data: users, isLoading: loadingUsers } = useQuery({
@@ -34,24 +37,17 @@ export default function LayoutSidebar() {
     staleTime: 0,
   });
 
-  const isLoading = loadingMessages || loadingUsers;
+  // Enable realtime only after initial load
+  useRealtimeConversations(loadingConversations ? null : user.id);
 
-  let displayedData: SidebarItem[] = [];
-
-  function getDisplayedData() {
-    switch (true) {
-      case isLoading:
-        return [];
-      case isMessages:
-        return conversations;
-      case isFriends:
-        return users;
-      default:
-        return [];
-    }
-  }
-
-  displayedData = getDisplayedData();
+  const isLoading = loadingConversations || loadingUsers;
+  const displayedData: SidebarItem[] = isLoading
+    ? []
+    : isMessages
+    ? conversations
+    : isFriends
+    ? users
+    : [];
 
   return (
     <section
@@ -67,7 +63,7 @@ export default function LayoutSidebar() {
             isFriends={isFriends}
             isMessages={isMessages}
             item={item}
-            key={`no-${index + 1}`}
+            key={`number-${item.id}-${index}`} // Better key
           />
         ))}
       </main>
