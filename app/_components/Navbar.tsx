@@ -12,7 +12,7 @@ export default function Navbar({ session }: { session: Session }) {
 
   return (
     <nav
-      className={`bg-white/50 backdrop-blur-xs p-6 row-start-2 row-end-3 sm:max-w-[150px] ${
+      className={`bg-white/50 backdrop-blur-xs px-4 py-6 row-start-2 row-end-3 sm:max-w-[150px] ${
         isBasePath ? "block" : "hidden"
       } sm:row-span-full sm:grid sm:grid-rows-[auto_1fr_auto] sm:gap-8`}
     >

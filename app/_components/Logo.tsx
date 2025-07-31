@@ -1,7 +1,7 @@
 export default function Logo() {
   return (
     <div>
-      <h1>Chat App</h1>
+      <h1>ChatSphere</h1>
     </div>
   );
 }

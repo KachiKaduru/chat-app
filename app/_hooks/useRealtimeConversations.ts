@@ -1,94 +1,90 @@
-// hooks/useRealtimeConversations.ts
 "use client";
 
 import { useEffect, useRef } from "react";
 import { supabase } from "../_lib/supabase";
-import { ConversationType } from "../_types/conversation-types";
 import { useQueryClient } from "@tanstack/react-query";
+import { useDebounce } from "./useDebounce";
 
 export function useRealtimeConversations(userId: string | null) {
   const queryClient = useQueryClient();
   const channelRef = useRef<ReturnType<typeof supabase.channel>>(null);
 
+  const { run: debouncedRefetch, cancel: cancelDebounce } = useDebounce(
+    () => {
+      console.log("🔄 Refetching conversations due to realtime event...");
+      queryClient.refetchQueries({ queryKey: ["conversations"] });
+    },
+    1000,
+    { leading: true, trailing: false }
+  );
+
   useEffect(() => {
     if (!userId) return;
 
-    // Clean up any existing channel
     const cleanup = () => {
       if (channelRef.current) {
         supabase
           .removeChannel(channelRef.current)
-          .then(() => console.log(`Conversations channel cleaned up`))
-          .catch((err) => console.error("Cleanup error:", err));
+          .then(() => console.log("🧹 Cleaned up conversations channel"))
+          .catch((err) => console.error("❌ Cleanup error:", err));
       }
     };
 
-    // Create new channel
-    const setupChannel = async () => {
-      cleanup(); // Clean up any existing channel first
+    const setupChannel = () => {
+      cleanup();
 
       const channel = supabase
-        .channel(`conversations:user:${userId}`, {
-          config: {
-            presence: { key: userId },
-            broadcast: { ack: true },
-          },
-        })
+        .channel(`realtime:messages-for-${userId}`)
         .on(
           "postgres_changes",
           {
-            event: "*",
+            event: "INSERT",
             schema: "public",
-            table: "conversations",
-            filter: `participants->>id=eq.${userId}`, // Adjust based on your participants structure
+            table: "messages",
           },
-          (payload) => {
-            console.log("Conversation update:", payload);
-            queryClient.setQueryData<ConversationType[]>(
-              ["conversations"],
-              (oldConversations = []) => {
-                // Handle different event types
-                switch (payload.eventType) {
-                  case "INSERT":
-                    return [payload.new as ConversationType, ...oldConversations];
+          async (payload) => {
+            const newMessage = payload.new;
+            const { conversation_id } = newMessage;
 
-                  case "UPDATE":
-                    return oldConversations.map((conv) =>
-                      conv.conversation_id === payload.new.conversation_id
-                        ? { ...conv, ...payload.new }
-                        : conv
-                    );
+            // Query the conversation_participants table
+            const { data, error } = await supabase
+              .from("conversation_participants")
+              .select("user_id")
+              .eq("conversation_id", conversation_id)
+              .eq("user_id", userId)
+              .single();
 
-                  case "DELETE":
-                    return oldConversations.filter(
-                      (conv) => conv.conversation_id !== payload.old.conversation_id
-                    );
-
-                  default:
-                    return oldConversations;
-                }
+            if (error) {
+              if (error.code !== "PGRST116") {
+                console.error("🔍 Error checking participant:", error.message);
               }
-            );
+              return;
+            }
+
+            if (data) {
+              // If current user is a participant in the conversation
+              debouncedRefetch();
+            }
           }
         )
         .subscribe((status, err) => {
           if (status === "SUBSCRIBED") {
-            console.log("Subscribed to conversations");
+            console.log(`✅ Subscribed to messages for user: ${userId}`);
           }
           if (err) {
-            console.error("Subscription error:", err);
+            console.error("❌ Subscription error:", err);
           }
         });
 
       channelRef.current = channel;
     };
 
-    // Add delay to prevent rapid reconnection
     const timer = setTimeout(setupChannel, 300);
 
     return () => {
       clearTimeout(timer);
       cleanup();
+      cancelDebounce();
     };
-  }, [userId, queryClient]);
+  }, [userId, debouncedRefetch, cancelDebounce, queryClient]);
 }

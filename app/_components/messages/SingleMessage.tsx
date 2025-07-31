@@ -23,27 +23,29 @@ export default function SingleMessage({
 
   return (
     <div
-      className={`w-fit max-w-[70dvw] sm:max-w-[60dvh] flex gap-1 ${
+      className={`w-fit max-w-[70dvw] sm:max-w-[40dvw] flex gap-1 ${
         isUserMessage ? "self-end flex-row" : "self-start flex-row-reverse"
       }`}
     >
       <div className={`flex flex-col gap-1 ${isUserMessage ? "items-end" : "items-start"}`}>
         <div
-          className={`px-3 py-2 border rounded-2xl ${
+          className={`px-3 pt-2 pb-1 border rounded-2xl flex flex-col ${
             isUserMessage
               ? "bg-purple-700 text-white border-purple-700"
               : "bg-gray-200 border-none text-black"
           }`}
         >
           <p>{children}</p>
-        </div>
 
-        {/* Timestamp and read receipt */}
-        <div className="flex items-center gap-1">
-          {timestamp && (
-            <span className="text-xs text-gray-500">{format(new Date(timestamp), "h:mm a")}</span>
-          )}
-          {isUserMessage && isRead && <span className="text-xs text-gray-500">✓✓</span>}
+          {/* Timestamp and read receipt */}
+          <div
+            className={`flex items-center gap-1 text-[10px] justify-end ${
+              isUserMessage ? "text-gray-200" : "text-gray-600"
+            }`}
+          >
+            {timestamp && <span>{format(new Date(timestamp), "h:mm a")}</span>}
+            {isUserMessage && isRead && <span>✓✓</span>}
+          </div>
         </div>
       </div>
 

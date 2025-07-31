@@ -25,8 +25,8 @@ export default function LayoutSidebar({ user }: { user: SessionUser }) {
     queryKey: ["conversations"],
     queryFn: getAllUserConversations,
     enabled: isMessages,
-    staleTime: 0,
-    // staleTime: 1000 * 60 * 5, // 5 minutes
+    // staleTime: 0,
+    staleTime: 1000 * 60 * 5, // 5 minutes
     // refetchOnMount: false, // Changed from "always"
   });
 
@@ -50,14 +50,14 @@ export default function LayoutSidebar({ user }: { user: SessionUser }) {
     : [];
 
   return (
-    <section
+    <aside
       className={`h-full ${
         isBasePath ? "block" : " hidden"
       } sm:block sm:w-[300px] overflow-auto bg-white text-black border-x-1 border-gray-200`}
     >
       <LayoutSidebarHeader pathname={pathname} />
 
-      <main className="flex flex-col gap-4 overflow-auto p-4">
+      <section className="flex flex-col gap-4 overflow-auto p-4">
         {displayedData.map((item, index) => (
           <LayoutSidebarItem
             isFriends={isFriends}
@@ -66,7 +66,7 @@ export default function LayoutSidebar({ user }: { user: SessionUser }) {
             key={`number-${item.id}-${index}`} // Better key
           />
         ))}
-      </main>
-    </section>
+      </section>
+    </aside>
   );
 }

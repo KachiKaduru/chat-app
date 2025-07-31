@@ -43,15 +43,17 @@ export default async function ConversationsPage({ params }: Props) {
   // Get participants and conversations in parallel
   const [participants, conversations] = await Promise.all([
     getParticipants(conversationId),
-    getAllUserConversations(), // This will come from cache due to prefetch
+    getAllUserConversations(),
   ]);
+
+  // console.log(participants);
 
   const isGroup =
     conversations.find((item: ConversationType) => item?.conversation_id === conversationId)
       .is_group === true;
 
   return (
-    <div className="grid grid-cols-1 grid-rows-[auto_1fr_auto] gap-3 h-[100dvh]">
+    <div className="grid grid-cols-1 grid-rows-[auto_1fr_auto] gap-2 h-[100dvh]">
       <SingleChatHeader conversationId={conversationId} />
 
       <MessagesContent

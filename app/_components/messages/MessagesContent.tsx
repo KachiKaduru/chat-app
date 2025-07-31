@@ -7,6 +7,8 @@ import { User } from "@/app/_types/users-type";
 import { SingleMessageType } from "@/app/_types/message-types";
 import { useRealtimeMessages } from "@/app/_hooks/useRealtimeMessages";
 import SingleMessage from "./SingleMessage";
+import Spinner from "../Spinner";
+import { FiLock } from "react-icons/fi";
 
 type Props = {
   conversationId: string;
@@ -38,13 +40,14 @@ export default function MessagesContent({ conversationId, participants, user, is
   }, [messages]);
 
   if (!conversationId) return null;
-  if (isLoading) return <div>Loading messages...</div>;
+  if (isLoading) return <Spinner />;
 
   return (
     <section className="overflow-auto h-full px-2 pt-1 pb-4">
       {!isConnected && (
-        <div className="text-center text-sm text-gray-500 py-2">
-          Connecting to realtime updates...
+        <div className="text-center text-sm text-gray-500 py-2 flex justify-center items-center gap-1.5">
+          <span>Secure and private conversations</span>
+          <FiLock />
         </div>
       )}
 
